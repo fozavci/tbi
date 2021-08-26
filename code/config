@@ -1,0 +1,3 @@
+load-module image keymeonemoretime WebsocketModule https://imgshare.io/images/XXX.png
+load-module image keymeonemoretime AssemblyModule https://imgshare.io/images/XXX.png
+connect ws://127.0.0.1:5001

@@ -1,0 +1,17 @@
+# Compile as an executable
+c:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /out:tbi.exe tbi.cs
+
+# Compile as a library
+c:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /target:library /out:tbi.dll tbi.cs
+
+# Disassemble from DLL/EXE to IL and Edit 
+ildasm /output:tbi.il tbi.dll
+notepad tbi.il
+
+# Patching for DLL Export like unmanaged DLLs
+  .method public hidebysig static void  Main() cil managed
+  {
+    .export [1]
+
+# Assembly from IL to DLL
+c:\Windows\Microsoft.NET\Framework64\v4.0.30319\ilasm /DLL /out:tbi-Ex.dll tbi.il
