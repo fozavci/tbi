@@ -7,4 +7,3 @@
  Exercises, Presentation and Video Recording<br>
  https://github.com/fozavci/TradecraftDevelopment-Fundamentals
  
-
