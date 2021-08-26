@@ -3,3 +3,8 @@
  It's a part of Tradecraft Development: Growing Implants in Memory workshop. <br>
  https://conference.hitb.org/hitbsecconf2021sin/sessions/hitblab-tradecraft-development-growing-implants-in-memory-live-edition/
 
+# Tradecraft Development Workshop Content
+ Exercises, Presentation and Video Recording<br>
+ https://github.com/fozavci/TradecraftDevelopment-Fundamentals
+ 
+
