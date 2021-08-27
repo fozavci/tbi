@@ -5,6 +5,8 @@
 
 # vscode
 .vs
+.vscode
+delivery
 
 #mac
 .DS_Store

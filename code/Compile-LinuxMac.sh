@@ -1,22 +1,22 @@
 #!/bin/bash
 # Configuration
-xorkey=hitb
+xorkey=hitbsecurity # The key must be longer than 5 chars
 outputimagedir=delivery
 templateimage=template.png
 
 # XOR encode module
-echo -n "Utilities are compiling..."
+echo "Utilities are compiling..."
 mcs /out:$outputimagedir/xorenc.exe xorenc.cs
 mcs /out:$outputimagedir/imgtest.exe imgtest.cs
 echo "done!"
 
 # Compile the implant
-echo -n "TML blunt implantment is compiling..."
+echo "TML blunt implantment is compiling..."
 mcs /out:$outputimagedir/tbi.exe tbi.cs
 echo "done!"
 
 # Compile the modules
-echo -n "Modules are compiling..."
+echo "Modules are compiling..."
 mcs /reference:$outputimagedir/tbi.exe /target:library /out:$outputimagedir/websocketmdl.dll websocketmdl.cs
 mcs /reference:$outputimagedir/tbi.exe /target:library /out:$outputimagedir/assemblymdl.dll assemblymdl.cs
 mcs /reference:$outputimagedir/tbi.exe /target:library /out:$outputimagedir/samplemdl.dll samplemdl.cs
@@ -38,7 +38,7 @@ mono $outputimagedir/imgtest.exe generateimage $templateimage $outputimagedir/po
 echo "Done!"
 
 # XOR the modules with a key
-echo -n "Modules are XOR encoding for standalone usage..."
+echo "Modules are XOR encoding for standalone usage..."
 mono $outputimagedir/xorenc.exe $outputimagedir/websocketmdl.dll $outputimagedir/websocketmdl-xor.dll $xorkey
 mono $outputimagedir/xorenc.exe $outputimagedir/assemblymdl.dll $outputimagedir/assemblymdl-xor.dll $xorkey
 mono $outputimagedir/xorenc.exe $outputimagedir/avbpmdl.dll $outputimagedir/avbpmdl-xor.dll $xorkey
